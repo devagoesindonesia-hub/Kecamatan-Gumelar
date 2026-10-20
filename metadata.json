@@ -1,0 +1,6 @@
+{
+  "name": "Portal Resmi Kecamatan Gumelar",
+  "description": "Portal terpadu Kecamatan Gumelar, Kabupaten Banyumas: profil 10 desa, peta fasilitas publik & kesehatan, potensi wisata, e-aduan masyarakat dengan notifikasi real-time, forum rembug warga, dan kalender acara.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
