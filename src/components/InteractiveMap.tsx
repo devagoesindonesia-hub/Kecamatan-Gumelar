@@ -72,31 +72,45 @@ export const InteractiveMap: React.FC = () => {
     if (!mapContainerRef.current) return;
     if (mapInstanceRef.current) return; // Already initialized
 
-    // Default center Gumelar
-    const initialCenter = selectedVillage
-      ? [selectedVillage.latitude, selectedVillage.longitude]
-      : KECAMATAN_INFO.centerCoordinates;
+    try {
+      if ((mapContainerRef.current as any)._leaflet_id) {
+        delete (mapContainerRef.current as any)._leaflet_id;
+      }
 
-    const map = L.map(mapContainerRef.current, {
-      center: initialCenter as [number, number],
-      zoom: 13,
-      scrollWheelZoom: true
-    });
+      // Default center Gumelar
+      const initialCenter = selectedVillage
+        ? [selectedVillage.latitude, selectedVillage.longitude]
+        : KECAMATAN_INFO.centerCoordinates;
 
-    // Clean OpenStreetMap Tile Layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19
-    }).addTo(map);
+      const map = L.map(mapContainerRef.current, {
+        center: initialCenter as [number, number],
+        zoom: 13,
+        scrollWheelZoom: true
+      });
 
-    const markersGroup = L.layerGroup().addTo(map);
+      // Clean OpenStreetMap Tile Layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+      }).addTo(map);
 
-    mapInstanceRef.current = map;
-    markersGroupRef.current = markersGroup;
+      const markersGroup = L.layerGroup().addTo(map);
+
+      mapInstanceRef.current = map;
+      markersGroupRef.current = markersGroup;
+    } catch (e) {
+      console.warn('Leaflet map initialization warning:', e);
+    }
 
     return () => {
-      map.remove();
-      mapInstanceRef.current = null;
+      try {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
+        }
+      } catch (err) {
+        console.warn('Leaflet cleanup warning:', err);
+      }
     };
   }, []);
 
